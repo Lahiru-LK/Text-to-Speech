@@ -2,4 +2,4 @@ Flask
 flask-cors
 soundfile
 simpleaudio
-git+https://github.com/hexgrad/Kokoro-TTS.git
+

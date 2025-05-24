@@ -2,5 +2,4 @@ node_modules/
 __pycache__/
 .env
 outputs/
-*.pt
 *.mp3
