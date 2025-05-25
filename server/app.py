@@ -3,8 +3,8 @@ from flask_cors import CORS
 from tts_engine import synthesize_speech, list_available_voices
 import io
 
-app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 
 @app.route('/tts', methods=['POST'])
 def tts():
@@ -32,4 +32,4 @@ def voices():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

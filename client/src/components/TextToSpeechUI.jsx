@@ -17,11 +17,13 @@ export default function TextToSpeechUI() {
         return document.documentElement.classList.contains('dark');
     });
 
+    console.log(import.meta.env.VITE_API_URL); 
 
+    const API = import.meta.env.VITE_API_URL;
 
 
     useEffect(() => {
-        axios.get('http://localhost:5000/voices')
+        axios.get(`${API}/voices`)
             .then(res => {
                 setVoices(res.data);
                 if (res.data.length > 0) setVoice(res.data[0].id);
@@ -31,14 +33,16 @@ export default function TextToSpeechUI() {
 
 
 
+
     const handleSubmit = async () => {
         setLoading(true); // Start spinner
         try {
-            const res = await axios.post(
-                'http://localhost:5000/tts',
-                { text, voice, speed },
-                { responseType: 'blob' }
-            );
+                const res = await axios.post(
+                    `${API}/tts`,  //instead of 'http://localhost:5000/tts'
+                    { text, voice, speed },
+                    { responseType: 'blob' }
+                );
+
 
             const blob = new Blob([res.data], { type: 'audio/mpeg' });
             const url = URL.createObjectURL(blob);
