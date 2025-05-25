@@ -1,7 +1,6 @@
 import os
 import io
 import soundfile as sf
-import simpleaudio as sa
 from kokoro import KPipeline
 import sys
 import os
