@@ -54,7 +54,7 @@ export default function TextToSpeechUI() {
         } catch (err) {
             console.error('TTS error:', err);
         } finally {
-            setLoading(false); // Stop spinner
+            setLoading(false); //Stop spinner
         }
     };
 
