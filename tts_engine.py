@@ -4,6 +4,7 @@ import soundfile as sf
 from kokoro import KPipeline
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'kokoro')))
 
 VOICE_FOLDER = "voices"
