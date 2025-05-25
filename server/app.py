@@ -29,9 +29,10 @@ def tts():
 @app.route('/voices', methods=['GET'])
 def voices():
     all_voices = list_available_voices()
-    print("Available Voices:", all_voices)  # 🧪 Debug log
+    print("Available Voices:", all_voices)  # Debug log
     return jsonify(all_voices)
 
+    application = app 
 
 if __name__ == '__main__':
     app.run()
