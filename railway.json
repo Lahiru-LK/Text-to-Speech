@@ -7,5 +7,7 @@
       }
     }
   },
-  "start": "gunicorn app:app"
+  "deploy": {
+    "startCommand": "gunicorn app:application --chdir server"
+  }
 }
