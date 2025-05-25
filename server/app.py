@@ -3,10 +3,8 @@ from flask_cors import CORS
 from tts_engine import synthesize_speech, list_available_voices
 import io
 
-app = Flask(__name__)  
+app = Flask(__name__)
 CORS(app, resources={r"/.*": {"origins": "*"}})
-
-
 
 @app.route('/tts', methods=['POST'])
 def tts():
@@ -29,10 +27,11 @@ def tts():
 @app.route('/voices', methods=['GET'])
 def voices():
     all_voices = list_available_voices()
-    print("Available Voices:", all_voices)  # Debug log
+    print("Available Voices:", all_voices)
     return jsonify(all_voices)
 
-    application = app 
+# This must be at root level, not inside any function
+application = app
 
 if __name__ == '__main__':
     app.run()
