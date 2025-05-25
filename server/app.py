@@ -30,7 +30,9 @@ def voices():
     return jsonify(all_voices)
 
 
-application = app
 
 if __name__ == '__main__':
     app.run()
+
+    
+application = app
