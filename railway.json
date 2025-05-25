@@ -16,7 +16,7 @@
         },
         "start": {
           "cmds": [
-            "gunicorn app:application"
+            "cd server && gunicorn app:application"
           ]
         }
       }
