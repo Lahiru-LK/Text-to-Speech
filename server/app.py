@@ -29,8 +29,8 @@ def voices():
     all_voices = list_available_voices()
     return jsonify(all_voices)
 
-# FIXED LOCATION
-application = app
+# # FIXED LOCATION
+# application = app
 
 if __name__ == '__main__':
     app.run()
