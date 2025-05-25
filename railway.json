@@ -6,11 +6,18 @@
         "python": {}
       },
       "phases": {
-        "build": {
-          "cmds": ["pip install -r requirements.txt"]
+        "setup": {
+          "nixPkgs": ["python311", "gcc"]
+        },
+        "install": {
+          "cmds": [
+            "pip install -r requirements.txt"
+          ]
         },
         "start": {
-          "cmd": "gunicorn app:application"
+          "cmds": [
+            "gunicorn app:application"
+          ]
         }
       }
     }
