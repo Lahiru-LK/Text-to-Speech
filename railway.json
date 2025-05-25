@@ -4,22 +4,8 @@
     "nixpacksConfig": {
       "languages": {
         "python": {}
-      },
-      "phases": {
-        "setup": {
-          "nixPkgs": ["python310", "gcc"]
-        },
-        "install": {
-          "cmds": [
-            "pip install -r server/requirements.txt"
-          ]
-        },
-        "start": {
-          "cmds": [
-            "cd server && gunicorn app:application"
-          ]
-        }
       }
     }
-  }
+  },
+  "start": "gunicorn app:app"
 }
