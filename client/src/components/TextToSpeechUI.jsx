@@ -126,7 +126,7 @@ export default function TextToSpeechUI() {
                     <Button
                         onClick={handleSubmit}
                         disabled={loading}
-                        className={`w-full sm:w-auto px-6  py-2 transition-transform duration-200  ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:scale-105'}`}
+                        className={`text-white bg-gradient-to-r from-blue-500 to-blue-600  w-full sm:w-auto px-6  py-2 transition-transform duration-200  ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:scale-105'}`}
                     >
                         {loading ? (
                             <div className="flex items-center gap-2">
