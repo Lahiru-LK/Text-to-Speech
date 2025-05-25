@@ -27,10 +27,9 @@ def tts():
 @app.route('/voices', methods=['GET'])
 def voices():
     all_voices = list_available_voices()
-    print("Available Voices:", all_voices)
     return jsonify(all_voices)
 
-# This must be at root level, not inside any function
+# FIXED LOCATION
 application = app
 
 if __name__ == '__main__':
