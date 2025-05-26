@@ -1,10 +1,12 @@
 import os
 from io import BytesIO
+import soundfile as sf
+from kokoro import KPipeline
 
-# 🔧 voice files තියෙන්නෙ මෙම folder එකේ
+SAMPLE_RATE = 24000
 VOICE_FOLDER = "voices"
 
-# 🧾 අර්ථවත් නමක් assign කරන dictionary එකක්
+# 🔤 Voice display names
 voice_labels = {
     "af_alloy.pt": "Alloy (US Female)",
     "af_aoede.pt": "Aoede (US Female)",
@@ -42,7 +44,7 @@ voice_labels = {
     "hm_psi.pt": "Psi (High Male)"
 }
 
-# ✅ voice list එකක් return කරන function එක
+# 📃 Show available voices from folder
 def list_available_voices():
     if not os.path.exists(VOICE_FOLDER):
         return []
@@ -54,16 +56,37 @@ def list_available_voices():
 
     return [
         {
-            "id": filename,
-            "name": voice_labels.get(filename, filename.replace(".pt", "").capitalize()),
+            "id": f,
+            "name": voice_labels.get(f, f.replace(".pt", "").capitalize()),
             "language": "en"
-        } for filename in voices
+        }
+        for f in voices
     ]
 
-# 🧪 test purpose එකට fake audio buffer එකක්
+# 🔊 Generate audio buffer from text + voice
 def synthesize_speech(text, voice_file, speed=1.0):
-    buffer = BytesIO()
-    buffer.write(b"FAKE_MP3_DATA")
-    buffer.seek(0)
-    print(f"[DEBUG] Synthesizing: {text} | Voice: {voice_file} | Speed: {speed}")
-    return buffer
+    if not text.strip():
+        raise ValueError("Text is empty")
+
+    voice_path = os.path.join(VOICE_FOLDER, voice_file)
+    if not os.path.exists(voice_path):
+        raise FileNotFoundError(f"Voice file not found: {voice_file}")
+
+    print(f"[INFO] Synthesizing text='{text}' with voice='{voice_file}' and speed={speed}")
+
+    # Kokoro engine
+    try:
+        pipeline = KPipeline(lang_code="a")
+        generator = pipeline(text, voice=voice_path)
+
+        buffer = BytesIO()
+        for _, _, audio in generator:
+            sf.write(buffer, audio, SAMPLE_RATE, format='MP3')
+            break
+
+        buffer.seek(0)
+        return buffer
+
+    except Exception as e:
+        print(f"[ERROR] Kokoro synthesis failed: {e}")
+        raise RuntimeError("Synthesis failed: " + str(e))

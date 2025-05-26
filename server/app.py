@@ -13,8 +13,6 @@ def tts():
     voice = data.get('voice', '')
     speed = float(data.get('speed', 1.0))
 
-    print(f"[API] /tts called with text: {text}, voice: {voice}, speed: {speed}")
-
     try:
         audio_buffer = synthesize_speech(text, voice, speed)
         return send_file(
@@ -28,12 +26,12 @@ def tts():
 
 @app.route('/voices', methods=['GET'])
 def voices():
-    print("[API] /voices called")
     all_voices = list_available_voices()
     return jsonify(all_voices)
 
 # Export Flask app for gunicorn
 application = app
+
 
 # if __name__ == '__main__':
 #     app.run(host='127.0.0.1', port=5000, debug=True)
