@@ -2,3 +2,4 @@ Flask
 flask-cors
 soundfile
 gunicorn
+torch
