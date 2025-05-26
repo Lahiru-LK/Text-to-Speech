@@ -9,7 +9,7 @@ __pycache__/
 *.db
 *.mp3
 *.wav
-*.pt  # model files (Kokoro voices)
+
 
 # ========== React (client) ==========
 client/node_modules/
@@ -21,7 +21,7 @@ server/__pycache__/
 server/*.pyc
 server/*.mp3
 server/*.wav
-server/*.pt  # for voice models
+
 server/outputs/
 
 # ========== VSCode & OS ==========
