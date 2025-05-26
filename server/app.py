@@ -2,7 +2,8 @@ from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
 from tts_engine import synthesize_speech, list_available_voices
 import io
-from server.tts_engine import synthesize_speech, list_available_voices
+from tts_engine import synthesize_speech, list_available_voices
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/.*": {"origins": "*"}})
@@ -35,5 +36,3 @@ def voices():
 if __name__ == '__main__':
     app.run()
 
-    
-application = app

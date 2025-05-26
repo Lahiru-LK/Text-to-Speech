@@ -17,8 +17,6 @@ export default function TextToSpeechUI() {
         return document.documentElement.classList.contains('dark');
     });
 
-    console.log(import.meta.env.VITE_API_URL); 
-
     const API = import.meta.env.VITE_API_URL;
 
 
@@ -38,7 +36,7 @@ export default function TextToSpeechUI() {
         setLoading(true); // Start spinner
         try {
                 const res = await axios.post(
-                    `${API}/tts`,  //instead of 'http://localhost:5000/tts'
+                    `${API}/tts`,  
                     { text, voice, speed },
                     { responseType: 'blob' }
                 );

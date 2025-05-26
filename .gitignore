@@ -1,6 +1,31 @@
+# ========== Global ==========
 node_modules/
-__pycache__/
-.env
+*.log
 outputs/
+.DS_Store
+*.pyc
+__pycache__/
+*.sqlite3
+*.db
 *.mp3
+*.wav
+*.pt  # model files (Kokoro voices)
 
+# ========== React (client) ==========
+client/node_modules/
+client/dist/
+client/.DS_Store
+
+# ========== Python Flask (server) ==========
+server/__pycache__/
+server/*.pyc
+server/*.mp3
+server/*.wav
+server/*.pt  # for voice models
+server/outputs/
+
+# ========== VSCode & OS ==========
+.vscode/
+*.swp
+Thumbs.db
+desktop.ini
