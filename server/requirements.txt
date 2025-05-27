@@ -3,4 +3,3 @@ flask-cors
 soundfile
 gunicorn
 numpy
-torch
