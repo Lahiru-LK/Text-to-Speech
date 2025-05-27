@@ -3,4 +3,4 @@ flask-cors
 soundfile
 gunicorn
 numpy
-torch
+torch==1.12.1
