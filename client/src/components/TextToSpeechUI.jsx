@@ -1,6 +1,7 @@
 import { Button, Select, Textarea } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import VoiceToast from './VoiceToast';
 
 export default function TextToSpeechUI() {
     const [text, setText] = useState('');
@@ -18,6 +19,9 @@ export default function TextToSpeechUI() {
     });
 
     const API = import.meta.env.VITE_API_URL;
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+
 
 
     useEffect(() => {
@@ -37,7 +41,7 @@ export default function TextToSpeechUI() {
         try {
             const res = await axios.post(
                 `${API}/tts`,
-                { text, voice, speed, engine: "deepinfra" },  
+                { text, voice, speed, engine: "deepinfra" },
                 { responseType: 'blob' }
             );
 
@@ -83,7 +87,7 @@ export default function TextToSpeechUI() {
                 {/* 🗣️ Title with Icon + Subtitle */}
                 <div className="text-center space-y-1">
                     <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
-                        🗣️ Text-to-Speech
+                        🗣️ Text to Speech
                     </h1>
                     <p className="text-gray-500 dark:text-gray-300 text-sm">
                         Convert your thoughts to clear spoken audio
@@ -108,9 +112,16 @@ export default function TextToSpeechUI() {
                             <Select
                                 value={voice}
                                 onChange={(e) => {
-                                    setVoice(e.target.value);
-                                    setShowButtons(false); // 👉 Hide buttons if voice changed
+                                    const selectedVoice = e.target.value;
+                                    const voiceName = voices.find(v => v.id === selectedVoice)?.name || selectedVoice;
+
+                                    setVoice(selectedVoice);
+                                    setShowButtons(false); // Hide buttons if voice changed
+
+                                    setToastMessage(`You selected "${voiceName}" for playback.`);
+                                    setShowToast(true);
                                 }}
+
                                 className="w-full"
                             >
                                 {voices.length === 0 && (
@@ -261,6 +272,12 @@ export default function TextToSpeechUI() {
                 )}
                 {/*  Add audio player element here */}
                 <audio id="audio-player" className="hidden" src={audioSrc}></audio>
+
+                {/* ✅ Toast Notification */}
+                {showToast && (
+                    <VoiceToast message={toastMessage} onClose={() => setShowToast(false)} />
+                )}
+
 
 
             </div>
