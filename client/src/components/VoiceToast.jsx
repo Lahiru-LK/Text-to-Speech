@@ -5,7 +5,7 @@ export default function VoiceToast({ message, onClose }) {
     useEffect(() => {
         const timer = setTimeout(() => {
             onClose();
-        }, 2000);
+        }, 4000);
         return () => clearTimeout(timer);
     }, [onClose]);
 
