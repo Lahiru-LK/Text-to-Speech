@@ -1,5 +1,7 @@
-Flask
+flask
 flask-cors
+requests
+python-dotenv
 soundfile
-gunicorn
 numpy
+gunicorn
