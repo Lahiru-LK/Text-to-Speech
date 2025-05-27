@@ -35,11 +35,12 @@ export default function TextToSpeechUI() {
     const handleSubmit = async () => {
         setLoading(true); // Start spinner
         try {
-                const res = await axios.post(
-                    `${API}/tts`,  
-                    { text, voice, speed },
-                    { responseType: 'blob' }
-                );
+            const res = await axios.post(
+                `${API}/tts`,
+                { text, voice, speed, engine: "deepinfra" },  
+                { responseType: 'blob' }
+            );
+
 
 
             const blob = new Blob([res.data], { type: 'audio/mpeg' });

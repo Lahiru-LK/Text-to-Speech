@@ -1,92 +1,95 @@
+# === tts_engine.py ===
 import os
 from io import BytesIO
-import soundfile as sf
-from kokoro import KPipeline
+import requests
+from base64 import b64decode
+from dotenv import load_dotenv
 
-SAMPLE_RATE = 24000
-VOICE_FOLDER = "voices"
+load_dotenv()
 
-# 🔤 Voice display names
 voice_labels = {
-    "af_alloy.pt": "Alloy (US Female)",
-    "af_aoede.pt": "Aoede (US Female)",
-    "af_bella.pt": "Bella (US Female)",
-    "af_heart.pt": "Heart (US Female)",
-    "af_jessica.pt": "Jessica (US Female)",
-    "af_kore.pt": "Kore (Female)",
-    "af_nicole.pt": "Nicole (US Female)",
-    "af_nova.pt": "Nova (US Female)",
-    "af_river.pt": "River (US Female)",
-    "af_sarah.pt": "Sarah (US Female)",
-    "af_sky.pt": "Sky (US Female)",
-    "am_adam.pt": "Adam (US Male)",
-    "am_echo.pt": "Echo (US Male)",
-    "am_eric.pt": "Eric (US Male)",
-    "am_fenrir.pt": "Fenrir (US Male)",
-    "am_liam.pt": "Liam (US Male)",
-    "am_michael.pt": "Michael (US Male)",
-    "am_onyx.pt": "Onyx (US Male)",
-    "am_puck.pt": "Puck (US Male)",
-    "bf_alice.pt": "Alice (UK Female)",
-    "bf_emma.pt": "Emma (UK Female)",
-    "bf_isabella.pt": "Isabella (UK Female)",
-    "bf_lily.pt": "Lily (UK Female)",
-    "bm_daniel.pt": "Daniel (UK Male)",
-    "bm_fable.pt": "Fable (UK Male)",
-    "bm_george.pt": "George (UK Male)",
-    "bm_lewis.pt": "Lewis (UK Male)",
-    "en_us_female.pt": "US Female (Generic)",
-    "en_us_male.pt": "US Male (Generic)",
-    "ff_siwis.pt": "Siwis (FR Female)",
-    "hf_alpha.pt": "Alpha (High Female)",
-    "hf_beta.pt": "Beta (High Female)",
-    "hm_omega.pt": "Omega (High Male)",
-    "hm_psi.pt": "Psi (High Male)"
+    "af_alloy": "Alloy (US Female)",
+    "af_aoede": "Aoede (US Female)",
+    "af_bella": "Bella (US Female)",
+    "af_heart": "Heart (US Female)",
+    "af_jessica": "Jessica (US Female)",
+    "af_kore": "Kore (Female)",
+    "af_nicole": "Nicole (US Female)",
+    "af_nova": "Nova (US Female)",
+    "af_river": "River (US Female)",
+    "af_sarah": "Sarah (US Female)",
+    "af_sky": "Sky (US Female)",
+    "am_adam": "Adam (US Male)",
+    "am_echo": "Echo (US Male)",
+    "am_eric": "Eric (US Male)",
+    "am_fenrir": "Fenrir (US Male)",
+    "am_liam": "Liam (US Male)",
+    "am_michael": "Michael (US Male)",
+    "am_onyx": "Onyx (US Male)",
+    "am_puck": "Puck (US Male)",
+    "bf_alice": "Alice (UK Female)",
+    "bf_emma": "Emma (UK Female)",
+    "bf_isabella": "Isabella (UK Female)",
+    "bf_lily": "Lily (UK Female)",
+    "bm_daniel": "Daniel (UK Male)",
+    "bm_fable": "Fable (UK Male)",
+    "bm_george": "George (UK Male)",
+    "bm_lewis": "Lewis (UK Male)",
+    "en_us_female": "US Female (Generic)",
+    "en_us_male": "US Male (Generic)",
+    "ff_siwis": "Siwis (FR Female)",
+    "hf_alpha": "Alpha (High Female)",
+    "hf_beta": "Beta (High Female)",
+    "hm_omega": "Omega (High Male)",
+    "hm_psi": "Psi (High Male)"
 }
 
-# 📃 Show available voices from folder
 def list_available_voices():
-    if not os.path.exists(VOICE_FOLDER):
-        return []
-
-    voices = sorted([
-        f for f in os.listdir(VOICE_FOLDER)
-        if f.endswith(".pt")
-    ])
-
     return [
         {
             "id": f,
-            "name": voice_labels.get(f, f.replace(".pt", "").capitalize()),
+            "name": voice_labels.get(f, f.capitalize()),
             "language": "en"
         }
-        for f in voices
+        for f in voice_labels
     ]
 
-# 🔊 Generate audio buffer from text + voice
-def synthesize_speech(text, voice_file, speed=1.0):
+def synthesize_speech(text, voice_file, speed=1.0, engine='deepinfra'):
     if not text.strip():
         raise ValueError("Text is empty")
 
-    voice_path = os.path.join(VOICE_FOLDER, voice_file)
-    if not os.path.exists(voice_path):
-        raise FileNotFoundError(f"Voice file not found: {voice_file}")
+    if engine == 'deepinfra':
+        api_key = os.getenv("DEEPINFRA_API_KEY")
+        if not api_key:
+            raise EnvironmentError("Missing DEEPINFRA_API_KEY in .env")
 
-    print(f"[INFO] Synthesizing text='{text}' with voice='{voice_file}' and speed={speed}")
+        url = "https://api.deepinfra.com/v1/inference/hexgrad/Kokoro-82M"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
 
-    # Kokoro engine
-    try:
-        pipeline = KPipeline(lang_code="a")
-        generator = pipeline(text, voice=voice_path)
+        payload = {
+            "text": text,
+            "voice": voice_file,
+            "speed": speed,
+            "format": "mp3"
+        }
 
-        buffer = BytesIO()
-        for _, _, audio in generator:
-            sf.write(buffer, audio, SAMPLE_RATE, format='MP3')
-            break
+        print("📤 Payload:", payload)
+        response = requests.post(url, headers=headers, json=payload)
+        print("📥 Response:", response.status_code)
 
-        buffer.seek(0)
-        return buffer
+        if response.status_code != 200:
+            print("🔴 DeepInfra Error:", response.status_code, response.text)
+            response.raise_for_status()
 
-    except Exception as e:
-        print(f"[ERROR] Kokoro synthesis failed: {e}")
-        raise RuntimeError("Synthesis failed: " + str(e))
+        result = response.json()
+        audio_uri = result.get("audio")
+
+        if not audio_uri or not audio_uri.startswith("data:audio"):
+            raise ValueError("No audio returned from DeepInfra")
+
+        base64_data = audio_uri.split(",", 1)[1]  # ✅ extract only base64 content
+        audio_bytes = b64decode(base64_data)
+        return BytesIO(audio_bytes)
